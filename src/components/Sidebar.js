@@ -4,8 +4,19 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { sidebarItemsData } from "../Data/SidebarData";
 import AddIcon from "@mui/icons-material/Add";
 import { channelListItems } from "../Data/ChannelListData"
+import db from "../firebase";
 
-function Sidebar() {
+function Sidebar(props) {
+
+  const addChannel = () =>{
+    const promptName = prompt("Enter Channel Name");
+    if(promptName){
+      db.collection('rooms').add({
+        name: promptName
+      })
+    }
+  }
+
   return (
     <Container>
       <WorkspaceContainer>
@@ -25,17 +36,16 @@ function Sidebar() {
       <ChannelsContainer>
         <NewChannelContainer>
           <div>Channels</div>
-          <AddIcon />
+          <AddIcon onClick={addChannel}/>
         </NewChannelContainer>
         <ChannelList>
-
-           { channelListItems.map((item) => (
-            <Channel>
-              {item.icon}
-              {item.text}  
-            </Channel>
-           ))}
-
+          {
+            props.rooms.map(item => (
+              <Channel>
+                # {item.name}
+              </Channel>
+            ))
+          }
         </ChannelList>
       </ChannelsContainer>
     </Container>
@@ -103,6 +113,7 @@ const NewChannelContainer = styled.div`
   padding-left: 19px;
   padding-right: 12px;
   height: 28px;
+  cursor: pointer;
 `;
 
 const Channel = styled.div`
