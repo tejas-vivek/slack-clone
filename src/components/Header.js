@@ -4,7 +4,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
-function Header() {
+function Header({ user, signOut }) {
   return (
     <Container>
         <Main>
@@ -19,10 +19,10 @@ function Header() {
         </Main>
         <UserContainer>
             <Name>
-                Tejas Helwatkar
+                {user.name}
             </Name>
-            <UserImage>
-                <img src="https://i.imgur.com/6VBx3io.png" alt="User"/>
+            <UserImage onClick={signOut}>
+                <img src={user.photo ? user.photo : "https://i.imgur.com/6VBx3io.png"}/>
             </UserImage>
         </UserContainer>
     </Container>

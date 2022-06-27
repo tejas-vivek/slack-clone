@@ -12,12 +12,14 @@ import styled from 'styled-components';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import db from './firebase'
+import {auth, provider} from './firebase';
+import Home from './components/Home';
 
 
 function App() {
 
   const [rooms, setRooms] = useState([])
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
   
   const getChannels = () => {
     db.collection('rooms').onSnapshot((snapshot) => {
@@ -26,27 +28,35 @@ function App() {
       }))
     })
   }
+
+  const signOut = () => {
+    auth.signOut().then(() => {
+      localStorage.removeItem('user');
+      setUser(null);
+    })
+  }
+
   useEffect(() => {
     getChannels();
   }, [])
   
-  console.log(rooms);
+  console.log("User in App State", user);
 
   return (
     <div className="App">
       <Router>
         {
           !user ?
-          <Login />
+          <Login setUser={setUser} />
           :
           <Container>
-              <Header />
+              <Header signOut={signOut} user={user}/>
               <Main>
                 <Sidebar rooms={rooms} />
                 <Routes>
-                  <Route path="/room" element={<Chat />}>
+                  <Route path="/room/:channelId" element={<Chat user={user}/>}>
                   </Route>
-                  <Route path="/" element={<Login />}>
+                  <Route path="/" element={<Home />}>
                   </Route>
                 </Routes>
               </Main>
@@ -63,7 +73,7 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-rows: 40px auto;
+  grid-template-rows: 40px minmax(0, 1fr);
 `
 // const Header = styled.div`
 // `

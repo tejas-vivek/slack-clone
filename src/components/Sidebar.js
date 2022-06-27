@@ -5,10 +5,20 @@ import { sidebarItemsData } from "../Data/SidebarData";
 import AddIcon from "@mui/icons-material/Add";
 import { channelListItems } from "../Data/ChannelListData"
 import db from "../firebase";
+import { useNavigate } from 'react-router-dom'
 
 function Sidebar(props) {
 
-  const addChannel = () =>{
+  const navigate = useNavigate();
+
+  const goToChannel = (id) => {
+    if(id){
+      console.log(id);
+      navigate(`/room/${id}`)
+    }
+  }
+
+  const addChannel = () => {
     const promptName = prompt("Enter Channel Name");
     if(promptName){
       db.collection('rooms').add({
@@ -41,7 +51,7 @@ function Sidebar(props) {
         <ChannelList>
           {
             props.rooms.map(item => (
-              <Channel>
+              <Channel onClick={()=>goToChannel(item.id)}>
                 # {item.name}
               </Channel>
             ))
